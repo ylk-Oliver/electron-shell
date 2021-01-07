@@ -1,0 +1,35 @@
+name: dncloud-#HOSTNAME
+
+heartbeat.monitors:
+- type: icmp
+  name: icmp
+  schedule: '@every 60s'
+  hosts:
+    - dncloud-#HOSTNAME.nginx
+    - dncloud-#HOSTNAME.ayes-be
+    - dncloud-#HOSTNAME.minio
+    - dncloud-#HOSTNAME.mongo
+  timeout: 16s
+  wait: 1s
+
+processors:
+- add_host_metadata:
+    netinfo.enabled: false
+    cache.ttl: 5m
+    geo:
+      name: #HOST_FULL_NAME
+      country_name: #COUNTRY_NAME
+      region_name: #REGION_NAME
+      city_name: #CITY_NAME
+
+- drop_fields:
+    fields: ["host.os"]
+
+output.logstash:
+  hosts: ["logstash:5044"]
+
+xpack.monitoring.enabled: true
+xpack.monitoring.elasticsearch:
+  hosts: ['https://es-cn-v6417hyip000nj8i6.public.elasticsearch.aliyuncs.com:9200']
+  username: monitoring
+  password: 3tOjRV%^Tu^6

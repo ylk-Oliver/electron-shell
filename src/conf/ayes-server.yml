@@ -1,0 +1,83 @@
+deploy:
+  standalone: true
+  intranet: true
+
+log:
+  max_bytes: 10485760
+  backup_count: 20
+  level: INFO
+
+mongodb:
+  endpoint: "mongo:27017"
+  db_name: dncloud
+  username: mongo
+  password: mongostorage
+  connect: true
+  min_pool_size: 30
+  max_pool_size: 60
+
+api:
+  version: "1.0"
+  host: 0.0.0.0
+  port: 6060
+  base_path: api
+  environment: production
+  websocket_port: 6078
+  sse_enabled: true
+
+ai:
+  host: 127.0.0.1
+  port: 5566
+  host_back: 127.0.0.1
+  niimask: 1
+  followup: 1
+  verbose: 0
+  lobe_segmentation: 1
+
+rabbitmq:
+  host: "rabbitmq"
+  port: 5672
+  virtual_host: "/"
+  exchange: "sse.direct"
+  routing_key: "detectionResult"
+  queue: "sse.detectionResult"
+  exchange_type: "direct"
+  username: alice
+  password: wonderland
+
+store:
+  switch: minifs
+  minifs:
+    default: dnstore
+    buckets:
+      - bucket_name: dnstore
+        endpoint: "minio:9000"
+        access_key: minio
+        secret_key: miniostorage
+        location: china
+        secure: false
+
+wechat:
+  enable: false
+  name: wechat.yml
+
+notification:
+  enable: false
+  name: notification.yml
+
+payment:
+  enable: false
+  name: payment.yml
+
+detection:
+  min_prob_value: 0.1
+
+upload:
+  store_original: false
+  compressed: true
+
+storage:
+  store_path: storage
+  upload_path: upload
+  download_path: download
+  original_path: original

@@ -1,0 +1,78 @@
+version: '3.5'
+services:
+  logstash:
+    container_name: 'logstash'
+    hostname: 'dncloud-#HOSTNAME'
+    image: logstash:6.7.0
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - /home/dntech/conf/logstash.yml:/usr/share/logstash/config/logstash.yml
+    networks:
+      - standalone
+
+  heartbeat:
+    container_name: 'heartbeat'
+    hostname: 'dncloud-#HOSTNAME'
+    image: store/elastic/heartbeat:6.7.0
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - /home/dntech/conf/heartbeat.yml:/usr/share/heartbeat/heartbeat.yml:ro
+    networks:
+      - standalone
+    command: heartbeat -e -strict.perms=false
+
+  metricbeat:
+    container_name: 'metricbeat'
+    hostname: 'dncloud-#HOSTNAME'
+    image: store/elastic/metricbeat:6.7.0
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Shanghai
+    user: root
+    volumes:
+      - /home/dntech/conf/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /proc:/hostfs/proc:ro
+      - /:/hostfs:ro
+    networks:
+      - standalone
+    command: metricbeat -e -strict.perms=false
+
+  gpubeat:
+    container_name: 'gpubeat'
+    hostname: 'dncloud-#HOSTNAME'
+    image: registry.cn-shenzhen.aliyuncs.com/dntech/gpubeat:6.5
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Shanghai
+    user: root
+    volumes:
+      - /home/dntech/conf/gpubeat.yml:/etc/nvidiagpubeat/nvidiagpubeat.yml
+    networks:
+      - standalone
+
+  auditbeat:
+    container_name: 'auditbeat'
+    hostname: 'dncloud-#HOSTNAME'
+    image: store/elastic/auditbeat:6.7.0
+    restart: unless-stopped
+    cap_add:
+      - AUDIT_CONTROL
+      - AUDIT_READ
+    pid: host
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - /home/dntech/conf/auditbeat.yml:/usr/share/auditbeat/auditbeat.yml:ro
+    networks:
+      - standalone
+    command: auditbeat -e -strict.perms=false
+
+networks:
+  standalone:
+    name: standalone

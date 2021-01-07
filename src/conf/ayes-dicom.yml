@@ -1,0 +1,79 @@
+routine:
+  store: '/var/dntech/ayes/jobrun'
+  dcmtk: '/opt/dntech/ayes'
+  sched:
+    beat: 1
+    wait: 0
+    from: 20010101000000
+    interval: 60
+    #at: '100000-080000'
+association:
+  findself:
+    aet: 'DIANNEI'
+    ip: '#HOST_IP_ADDRESS'
+    port: 6080
+  storeself:
+    aet: 'DIANNEI'
+    ip: '#HOST_IP_ADDRESS'
+    port: 6070
+  fetchself:
+    aet: 'DIANNEI'
+    ip: '#HOST_IP_ADDRESS'
+    port: 6090
+  fetchscu:
+    - aet: 'ORTHANC'
+      ip: '#PACS_IP_ADDRESS'
+      port: 4242
+      cond:
+        QueryRetrieveModel: 'S'
+        QueryRetrieveLevel: 'STUDY'
+        QueryTransferSyntax: '-x='
+        MoveTransferSyntax: '+xa'
+        Modality: 'CT'
+  findscu:
+    - aet: 'ORTHANC'
+      ip: '#PACS_IP_ADDRESS'
+      port: 4242
+      cond:
+        QueryRetrieveModel: 'S'
+        QueryRetrieveLevel: 'STUDY'
+        QueryTransferSyntax: '-x='
+        MoveTransferSyntax: '+xa'
+        Modality: 'CT'
+        #StudyDescription: '*CHEST*'
+  storescp:
+    - aet: 'ORTHANC'
+      ip: '#HOST_IP_ADDRESS'
+      port: 4242
+  storescu:
+    - aet: 'ORTHANC'
+      ip: '#HOST_IP_ADDRESS'
+      port: 4242
+conversion:
+  reduce:
+    min: 25
+    best: true
+  allow:
+    - Modality: 'CT'
+      ImageType: '(ORIGINAL)(.*)(PRIMARY)(.*)(AXIAL)'
+      ProtocolName: '*CHEST*'
+    - Modality: 'CT'
+      ImageType: '(ORIGINAL)(.*)(PRIMARY)(.*)(AXIAL)'
+      ProtocolName: '*THORAX*'
+  deny:
+    - Modality: 'CT'
+      ImageType: 'AXIAL'
+      ProtocolName: 'Abdomen'
+    - ProtocolName: 'CTA'
+    - ProtocolName: 'Head'
+  priorities:
+    - ManufacturerModelName:
+        CT540: 50
+        # 'CT540' 添加优先级的CT型号; '50' 优先级数值, 越低优先级越高, 限定1~99
+        CT450: 60
+    - StationName:
+        CT540: 100
+        CT80663: 10
+server:
+    username: '#ADMIN_USERNAME'
+    password: '#ADMIN_PASSWORD'

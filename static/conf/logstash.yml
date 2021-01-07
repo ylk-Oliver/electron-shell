@@ -1,0 +1,14 @@
+node.name: dncloud-#HOSTNAME
+http.host: '0.0.0.0'
+
+xpack.management.enabled: true
+xpack.management.elasticsearch.hosts: ['https://es-cn-v6417hyip000nj8i6.public.elasticsearch.aliyuncs.com:9200']
+xpack.management.elasticsearch.username: logstash_admin
+xpack.management.elasticsearch.password: 73R67TF%GqKv
+xpack.management.logstash.poll_interval: 60s
+xpack.management.pipeline.id: standalone-beats
+
+xpack.monitoring.elasticsearch.hosts: ['https://es-cn-v6417hyip000nj8i6.public.elasticsearch.aliyuncs.com:9200']
+xpack.monitoring.elasticsearch.username: monitoring
+xpack.monitoring.elasticsearch.password: 3tOjRV%^Tu^6
+

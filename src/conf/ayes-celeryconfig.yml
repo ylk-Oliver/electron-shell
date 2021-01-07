@@ -1,0 +1,35 @@
+config:
+  broker_url: 'amqp://alice:wonderland@rabbitmq:5672//'  # 指定 Broker
+  imports:
+    - 'tasks'  # 注册
+  task_serializer: 'json'  # 指定任务序列化方式
+  result_serializer: 'json'
+  accept_content:  # 指定任务接受的序列化类型
+    - 'json'
+  result_expires: 600  # 任务过期时间,celery任务执行结果的超时时间
+  timezone: 'Asia/Shanghai'  # 指定时区，默认是 UTC
+  broker_heartbeat: 0  # 心跳链接
+  broker_pool_limit: 10  # 默认链接池 默认连接数：10
+  task_routes:  # 路由配置 任务优先级配置
+    celery_task_detection:
+      queue: 'lung_nodule_detection'
+      routing_key: 'detection'
+    celery_task_followup:
+      queue: 'lung_nodule_followup'
+      routing_key: 'followup'
+  task_queues:  # 队列配置
+    lung_nodule_detection:
+      exchange: 'lung_nodule'
+      exchange_type: 'direct'
+      routing_key: 'detection'
+    lung_nodule_followup:
+      exchange: 'lung_nodule'
+      exchange_type: 'direct'
+      routing_key: 'followup'
+  #task_default_queue:  # 默认队列
+  task_default_priority: 10  # task默认优先级
+  task_track_started: true  # task开始started状态回传
+  result_backend: 'file:///var/dntech/ayes/share_detection'  # 任务结果后端
+  worker_concurrency: 1  # 执行任务的并发工作单元数量
+  worker_prefetch_multiplier: 1  # celery worker 每次去BROKER中预取任务的数量
+  worker_max_tasks_per_child: 100  # 防止内存泄漏，一个worker执行最大任务数为100

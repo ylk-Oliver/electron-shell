@@ -1,0 +1,7 @@
+# 前三个创建工程时默认存在，建议test文件夹的内容不需要改动，因为实际开发过程并不会使用和改动，建议不需要eslint
+test/unit/coverage/**
+test/unit/*.js
+test/e2e/*.js
+test/e2e/specs/*.js
+# electron-vue里面为webpack配置文件，建议不需要eslint
+electron-vue/*.js
